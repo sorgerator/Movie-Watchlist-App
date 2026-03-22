@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+
+    <dimen name="movie_card_elevation">4dp</dimen>
+    <dimen name="movie_image_height">200dp</dimen>
+
+    <dimen name="avatar_size">64dp</dimen>
+    <dimen name="card_corner_radius">12dp</dimen>
+    <dimen name="section_spacing">20dp</dimen>
+</resources>
