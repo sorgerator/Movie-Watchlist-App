@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Movie-Watchlist-App</string>
+    <string name="empty_list">No movies added yet. Time to find some popcorn!</string>
+
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_watchlist">My Watchlist</string>
+    <string name="title_add_movie">Add New Movie</string>
+    <string name="btn_add">Add to Watchlist</string>
+</resources>
