@@ -1,55 +1,95 @@
 package com.example.movie_watchlist_app.presentation.ui.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.movie_watchlist_app.R
-import com.example.movie_watchlist_app.presentation.ui.components.StatisticItem
+import com.example.movie_watchlist_app.presentation.ui.components.ShortcutCard
 import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
 
+data class DashboardItem(val title: String, val subtitle: String, val icon: ImageVector, val route: String, val imageRes: Int)
+
 @Composable
-fun DashboardScreen(onNavigateToWatchlist: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.padding_medium))
-    ) {
+fun DashboardScreen(onNavigate: (String) -> Unit) {
+    var searchQuery by remember { mutableStateOf("") }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(64.dp).background(MaterialTheme.colorScheme.primary, CircleShape))
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text("Tarik Sorguč", style = MaterialTheme.typography.titleLarge)
-                Text("Movie Buff Level 1", style = MaterialTheme.typography.bodySmall)
+    val items = listOf(
+        DashboardItem("My Watchlist", "View saved movies", Icons.Default.List, "watchlist", R.drawable.watchlist_img),
+        DashboardItem("Add Movie", "Discover new titles", Icons.Default.Add, "add_movie", R.drawable.add_movie_img),
+        DashboardItem("Favorites", "Top rated picks", Icons.Default.Star, "favorites", R.drawable.favorites_img),
+        DashboardItem("Profile", "Account settings", Icons.Default.AccountCircle, "profile", R.drawable.profile_img)
+    )
+
+    val filtered = items.filter { it.title.contains(searchQuery, ignoreCase = true) }.chunked(2)
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+
+        Image(
+            painter = painterResource(id = R.drawable.movie_banner),
+            contentDescription = "Movie Dashboard Banner",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
+        Spacer(Modifier.height(16.dp))
+
+        Text("Movie Dashboard", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = searchQuery, onValueChange = { searchQuery = it },
+            label = { Text("Search menus") }, leadingIcon = { Icon(Icons.Default.Search, null) },
+            modifier = Modifier.fillMaxWidth(), singleLine = true, shape = RoundedCornerShape(12.dp)
+        )
+        Spacer(Modifier.height(16.dp))
+
+        filtered.forEach { rowItems ->
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                ShortcutCard(
+                    title = rowItems[0].title,
+                    subtitle = rowItems[0].subtitle,
+                    icon = rowItems[0].icon,
+                    imageRes = rowItems[0].imageRes,
+                    onClick = { onNavigate(rowItems[0].route) },
+                    modifier = Modifier.weight(1f)
+                )
+                if (rowItems.size > 1) {
+                    ShortcutCard(
+                        title = rowItems[1].title,
+                        subtitle = rowItems[1].subtitle,
+                        icon = rowItems[1].icon,
+                        imageRes = rowItems[1].imageRes,
+                        onClick = { onNavigate(rowItems[1].route) },
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
             }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            StatisticItem("Watched", "0")
-            StatisticItem("Watchlist", "0")
-        }
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        Button(onClick = onNavigateToWatchlist, modifier = Modifier.fillMaxWidth()) {
-            Text("Open Watchlist")
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun DashboardScreenPreview() {
     MovieWatchlistTheme {
-        DashboardScreen(onNavigateToWatchlist = {})
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            DashboardScreen(onNavigate = {})
+        }
     }
 }
