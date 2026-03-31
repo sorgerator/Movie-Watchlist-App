@@ -1,6 +1,5 @@
 package com.example.movie_watchlist_app.presentation.ui.theme
 
-import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -9,21 +8,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFFE50914),
-    secondary = Color(0xFF221F1F),
-    tertiary = Color(0xFFB81D24),
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = DeepGreenPrimary,
+    secondary = DeepGreenSecondary,
+    background = Color(0xFFF5F5F5),
+    surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
+    onBackground = Color(0xFF121212),
+    onSurface = Color(0xFF121212),
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFE50914),
-    secondary = Color(0xFFB81D24),
-    background = Color(0xFF1C1B1F)
+    primary = DeepGreenPrimary,
+    secondary = DeepGreenSecondary,
+    background = DarkBackground,
+    surface = SurfaceDark,
+    onPrimary = Color.White,
+    onBackground = TextPrimaryDark,
+    onSurface = TextPrimaryDark
 )
 
 @Composable
