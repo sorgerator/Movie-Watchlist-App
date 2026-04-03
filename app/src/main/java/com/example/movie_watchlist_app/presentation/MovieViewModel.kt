@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui
+package com.example.movie_watchlist_app.presentation
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

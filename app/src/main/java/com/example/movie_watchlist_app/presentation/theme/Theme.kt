@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.theme
+package com.example.movie_watchlist_app.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

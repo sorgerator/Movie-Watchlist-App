@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.movie_watchlist_app.presentation.ui.components.MovieItem
 import com.example.movie_watchlist_app.presentation.util.Movie
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,10 +28,18 @@ fun WatchlistScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Watchlist", color = MaterialTheme.colorScheme.primary) },
+                title = {
+                    Text(
+                        "My Watchlist",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
@@ -41,7 +49,11 @@ fun WatchlistScreen(
                 onClick = onNavigateToAdd,
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     ) { padding ->
@@ -53,9 +65,21 @@ fun WatchlistScreen(
                     items(movies) { movie ->
                         MovieItem(
                             movie = movie,
-                            onToggleWatched = { isWatched -> onToggleWatched(movie.id, isWatched) },
-                            onToggleFavorite = { isFav -> onToggleFavorite(movie.id, isFav) },
-                            onDelete = { onDelete(movie.id) }
+                            onToggleWatched = { isWatched ->
+                                onToggleWatched(
+                                    movie.id,
+                                    isWatched
+                                )
+                            },
+                            onToggleFavorite = { isFav ->
+                                onToggleFavorite(
+                                    movie.id,
+                                    isFav
+                                )
+                            },
+                            onDelete = {
+                                onDelete(movie.id)
+                            }
                         )
                     }
                 }
@@ -64,7 +88,10 @@ fun WatchlistScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
 @Composable
 fun WatchlistScreenPopulatedPreview() {
     val mockMovies = listOf(
@@ -88,6 +115,15 @@ fun WatchlistScreenPopulatedPreview() {
         ),
         Movie(
             id = 3,
+            title = "Saving Private Ryan",
+            genre = "Action",
+            description = "",
+            priority = "High",
+            isWatched = false,
+            isFavorite = true
+        ),
+        Movie(
+            id = 4,
             title = "The Dark Knight",
             genre = "Action",
             description = "",
@@ -96,7 +132,7 @@ fun WatchlistScreenPopulatedPreview() {
             isWatched = false,
         ),
         Movie(
-            id = 3,
+            id = 5,
             title = "Goldfinger",
             genre = "Action",
             description = "",
@@ -105,8 +141,62 @@ fun WatchlistScreenPopulatedPreview() {
             isWatched = false,
         ),
         Movie(
-            id = 2,
+            id = 6,
+            title = "A Bridge to Far",
+            genre = "Action",
+            description = "",
+            priority = "Medium",
+            isWatched = false,
+            isFavorite = true
+        ),
+        Movie(
+            id = 7,
             title = "No Man's Land",
+            genre = "Action",
+            description = "",
+            priority = "Low",
+            isWatched = false,
+            isFavorite = false
+        ),
+        Movie(
+            id = 8,
+            title = "Super Mario",
+            genre = "Comedy",
+            description = "",
+            priority = "Low",
+            isWatched = false,
+            isFavorite = false
+        ),
+        Movie(
+            id = 9,
+            title = "Bridge on the River Kwai",
+            genre = "Action",
+            description = "",
+            priority = "Low",
+            isWatched = false,
+            isFavorite = true
+        ),
+        Movie(
+            id = 10,
+            title = "Ted",
+            genre = "Comedy",
+            description = "",
+            priority = "Low",
+            isWatched = false,
+            isFavorite = true
+        ),
+        Movie(
+            id = 11,
+            title = "Ted 2",
+            genre = "Comedy",
+            description = "",
+            priority = "Low",
+            isWatched = false,
+            isFavorite = false
+        ),
+        Movie(
+            id = 12,
+            title = "No Man Left Behind",
             genre = "Action",
             description = "",
             priority = "Low",
