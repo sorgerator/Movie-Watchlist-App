@@ -21,38 +21,64 @@ fun RegistrationScreen(onRegisterSuccess: () -> Unit, onNavigateToLogin: () -> U
     var confirmPassword by remember { mutableStateOf("") }
     var hasTriedSubmit by remember { mutableStateOf(false) }
 
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmVisible by remember { mutableStateOf(false) }
+
     val nameError = if (hasTriedSubmit) AuthValidators.validateFullName(fullName) else null
     val emailError = if (hasTriedSubmit) AuthValidators.validateEmail(email) else null
     val passwordError = if (hasTriedSubmit) AuthValidators.validatePassword(password) else null
     val confirmError = if (hasTriedSubmit) AuthValidators.validateConfirmPassword(password, confirmPassword) else null
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center
-        ) {
+    val isRegisterEnabled = fullName.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
+
+    RegistrationScreen(
+        fullName = fullName, email = email, password = password, confirmPassword = confirmPassword,
+        nameError = nameError, emailError = emailError, passwordError = passwordError, confirmError = confirmError,
+        passwordVisible = passwordVisible, confirmVisible = confirmVisible, isRegisterEnabled = isRegisterEnabled,
+        onFullNameChange = { fullName = it }, onEmailChange = { email = it },
+        onPasswordChange = { password = it }, onConfirmPasswordChange = { confirmPassword = it },
+        onPasswordVisibilityToggle = { passwordVisible = !passwordVisible },
+        onConfirmVisibilityToggle = { confirmVisible = !confirmVisible },
+        onRegisterClick = {
+            hasTriedSubmit = true
+            if (AuthValidators.validateFullName(fullName) == null && AuthValidators.validateEmail(email) == null &&
+                AuthValidators.validatePassword(password) == null && AuthValidators.validateConfirmPassword(password, confirmPassword) == null) {
+                onRegisterSuccess()
+            }
+        },
+        onNavigateToLogin = onNavigateToLogin
+    )
+}
+
+@Composable
+private fun RegistrationScreen(
+    fullName: String, email: String, password: String, confirmPassword: String,
+    nameError: String?, emailError: String?, passwordError: String?, confirmError: String?,
+    passwordVisible: Boolean, confirmVisible: Boolean, isRegisterEnabled: Boolean,
+    onFullNameChange: (String) -> Unit, onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit, onConfirmPasswordChange: (String) -> Unit,
+    onPasswordVisibilityToggle: () -> Unit, onConfirmVisibilityToggle: () -> Unit,
+    onRegisterClick: () -> Unit, onNavigateToLogin: () -> Unit
+) {
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Column(modifier = Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Center) {
             AuthHeader("Create Account", "Start building your watchlist")
             Spacer(Modifier.height(24.dp))
-            AuthTextField(fullName, { fullName = it }, "Full Name", nameError)
+            AuthTextField(fullName, onFullNameChange, "Full Name", nameError)
             Spacer(Modifier.height(16.dp))
-            AuthTextField(email, { email = it }, "Email", emailError)
+            AuthTextField(email, onEmailChange, "Email", emailError)
             Spacer(Modifier.height(16.dp))
-            PasswordTextField(password, { password = it }, "Password", passwordError)
+            PasswordTextField(
+                password, onPasswordChange, "Password", passwordError,
+                isVisible = passwordVisible, onVisibilityToggle = onPasswordVisibilityToggle
+            )
             Spacer(Modifier.height(16.dp))
-            PasswordTextField(confirmPassword, { confirmPassword = it }, "Confirm Password", confirmError)
+            PasswordTextField(
+                confirmPassword, onConfirmPasswordChange, "Confirm Password", confirmError,
+                isVisible = confirmVisible, onVisibilityToggle = onConfirmVisibilityToggle
+            )
             Spacer(Modifier.height(24.dp))
-            AuthPrimaryButton("Register", onClick = {
-                hasTriedSubmit = true
-                if (nameError == null && emailError == null && passwordError == null && confirmError == null) {
-                    onRegisterSuccess()
-                }
-            })
+            AuthPrimaryButton("Register", enabled = isRegisterEnabled, onClick = onRegisterClick)
             Spacer(Modifier.height(16.dp))
             AuthDivider()
             Spacer(Modifier.height(16.dp))

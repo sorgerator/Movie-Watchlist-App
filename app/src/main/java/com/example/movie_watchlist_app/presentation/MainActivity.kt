@@ -33,7 +33,7 @@ fun MovieAppNavigation() {
     val navController = rememberNavController()
     val movieViewModel: MovieViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "state_basics") {
 
         composable("login") {
             LoginScreen(
@@ -89,6 +89,16 @@ fun MovieAppNavigation() {
                 onToggleFavorite = { id, isFav -> movieViewModel.toggleFavorite(id, isFav) },
                 onDelete = { id -> movieViewModel.deleteMovie(id) },
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("state_basics") {
+            StateBasicsScreen(
+                onBack = {
+                    navController.navigate("login") {
+                        popUpTo("state_basics") { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -18,12 +18,31 @@ import androidx.compose.ui.unit.dp
 import com.example.movie_watchlist_app.presentation.ui.components.StatisticItem
 import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(onLogout: () -> Unit, onBack: () -> Unit) {
     var notificationsEnabled by remember { mutableStateOf(true) }
     var darkThemeEnabled by remember { mutableStateOf(false) }
 
+    ProfileScreen(
+        notificationsEnabled = notificationsEnabled,
+        darkThemeEnabled = darkThemeEnabled,
+        onNotificationsChange = { notificationsEnabled = it },
+        onThemeChange = { darkThemeEnabled = it },
+        onLogout = onLogout,
+        onBack = onBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProfileScreen(
+    notificationsEnabled: Boolean,
+    darkThemeEnabled: Boolean,
+    onNotificationsChange: (Boolean) -> Unit,
+    onThemeChange: (Boolean) -> Unit,
+    onLogout: () -> Unit,
+    onBack: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,10 +56,7 @@ fun ProfileScreen(onLogout: () -> Unit, onBack: () -> Unit) {
         }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
@@ -53,21 +69,15 @@ fun ProfileScreen(onLogout: () -> Unit, onBack: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier.size(80.dp),
-                        tint = MaterialTheme.colorScheme.primary
+                        imageVector = Icons.Default.AccountCircle, contentDescription = "Profile Picture",
+                        modifier = Modifier.size(80.dp), tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("User", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Student Developer", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text("student@ibu.edu.ba", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                         StatisticItem(label = "Added", value = "12")
                         StatisticItem(label = "Watched", value = "5")
                         StatisticItem(label = "Favorites", value = "3")
@@ -79,32 +89,24 @@ fun ProfileScreen(onLogout: () -> Unit, onBack: () -> Unit) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Preferences",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    text = "Preferences", style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(bottom = 8.dp)
                 )
-
                 PreferenceItem(
-                    icon = Icons.Default.Notifications,
-                    title = "Push Notifications",
-                    isChecked = notificationsEnabled,
-                    onCheckedChange = { notificationsEnabled = it }
+                    icon = Icons.Default.Notifications, title = "Push Notifications",
+                    isChecked = notificationsEnabled, onCheckedChange = onNotificationsChange
                 )
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = MaterialTheme.colorScheme.outlineVariant)
                 PreferenceItem(
-                    icon = Icons.Default.Settings,
-                    title = "Dark Mode",
-                    isChecked = darkThemeEnabled,
-                    onCheckedChange = { darkThemeEnabled = it }
+                    icon = Icons.Default.Settings, title = "Dark Mode",
+                    isChecked = darkThemeEnabled, onCheckedChange = onThemeChange
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                onClick = onLogout, modifier = Modifier.fillMaxWidth().height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
                 Text("Logout", color = MaterialTheme.colorScheme.onError)
