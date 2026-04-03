@@ -33,16 +33,27 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
 
     val filtered = items.filter { it.title.contains(searchQuery, ignoreCase = true) }.chunked(2)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    DashboardScreen(
+        searchQuery = searchQuery,
+        onSearchQueryChange = { searchQuery = it },
+        filteredRows = filtered,
+        onNavigate = onNavigate
+    )
+}
 
+@Composable
+private fun DashboardScreen(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    filteredRows: List<List<DashboardItem>>,
+    onNavigate: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Image(
             painter = painterResource(id = R.drawable.movie_banner),
             contentDescription = "Movie Dashboard Banner",
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(12.dp))
+            modifier = Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(12.dp))
         )
         Spacer(Modifier.height(16.dp))
 
@@ -50,30 +61,22 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = searchQuery, onValueChange = { searchQuery = it },
+            value = searchQuery, onValueChange = onSearchQueryChange,
             label = { Text("Search menus") }, leadingIcon = { Icon(Icons.Default.Search, null) },
             modifier = Modifier.fillMaxWidth(), singleLine = true, shape = RoundedCornerShape(12.dp)
         )
         Spacer(Modifier.height(16.dp))
 
-        filtered.forEach { rowItems ->
+        filteredRows.forEach { rowItems ->
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 ShortcutCard(
-                    title = rowItems[0].title,
-                    subtitle = rowItems[0].subtitle,
-                    icon = rowItems[0].icon,
-                    imageRes = rowItems[0].imageRes,
-                    onClick = { onNavigate(rowItems[0].route) },
-                    modifier = Modifier.weight(1f)
+                    title = rowItems[0].title, subtitle = rowItems[0].subtitle, icon = rowItems[0].icon,
+                    imageRes = rowItems[0].imageRes, onClick = { onNavigate(rowItems[0].route) }, modifier = Modifier.weight(1f)
                 )
                 if (rowItems.size > 1) {
                     ShortcutCard(
-                        title = rowItems[1].title,
-                        subtitle = rowItems[1].subtitle,
-                        icon = rowItems[1].icon,
-                        imageRes = rowItems[1].imageRes,
-                        onClick = { onNavigate(rowItems[1].route) },
-                        modifier = Modifier.weight(1f)
+                        title = rowItems[1].title, subtitle = rowItems[1].subtitle, icon = rowItems[1].icon,
+                        imageRes = rowItems[1].imageRes, onClick = { onNavigate(rowItems[1].route) }, modifier = Modifier.weight(1f)
                     )
                 } else {
                     Spacer(Modifier.weight(1f))
