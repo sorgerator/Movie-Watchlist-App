@@ -11,10 +11,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.movie_watchlist_app.presentation.ui.MovieViewModel
 import com.example.movie_watchlist_app.presentation.ui.screens.*
-import com.example.movie_watchlist_app.presentation.ui.screens.dashboard.DashboardScreen
-import com.example.movie_watchlist_app.presentation.ui.screens.profile.ProfileScreen
-import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,90 +33,41 @@ fun MovieAppNavigation() {
     val navController = rememberNavController()
     val movieViewModel: MovieViewModel = viewModel()
 
-    NavHost(
-        navController = navController,
-        startDestination = "state_basics"
-    ) {
+    NavHost(navController = navController, startDestination = "login") {
 
         composable("login") {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate("dashboard") {
-                        popUpTo("login") {
-                            inclusive = true
-                        }
-                    }
-                },
-                onNavigateToRegister = {
-                    navController.navigate("register")
-                }
+                onLoginSuccess = { navController.navigate("dashboard") { popUpTo("login") { inclusive = true } } },
+                onNavigateToRegister = { navController.navigate("register") }
             )
         }
 
         composable("register") {
             RegistrationScreen(
-                onRegisterSuccess = {
-                    navController.navigate("login")
-                },
-                onNavigateClick = {
-                    navController.popBackStack()
-                }
+                onRegisterSuccess = { navController.navigate("login") },
+                onNavigateToLogin = { navController.popBackStack() }
             )
         }
 
         composable("dashboard") {
-            DashboardScreen(
-                onNavigate = { route ->
-                    navController.navigate(route)
-                }
-            )
+            DashboardScreen(onNavigate = { route -> navController.navigate(route) })
         }
 
         composable("watchlist") {
             WatchlistScreen(
                 movies = movieViewModel.movies,
-                onToggleWatched = { id,
-                                    isWatched ->
-                    movieViewModel.toggleWatched(
-                        id,
-                        isWatched
-                    )
-                },
-                onToggleFavorite = {
-                    id,
-                    isFav -> movieViewModel.toggleFavorite(
-                    id,
-                    isFav
-                    )
-                },
-                onDelete = {
-                    id -> movieViewModel.deleteMovie(id)
-                },
-                onNavigateToAdd = {
-                    navController.navigate("add_movie")
-                },
-                onBack = {
-                    navController.popBackStack()
-                }
+                onToggleWatched = { id, isWatched -> movieViewModel.toggleWatched(id, isWatched) },
+                onToggleFavorite = { id, isFav -> movieViewModel.toggleFavorite(id, isFav) },
+                onDelete = { id -> movieViewModel.deleteMovie(id) },
+                onNavigateToAdd = { navController.navigate("add_movie") },
+                onBack = { navController.popBackStack() }
             )
         }
 
         composable("add_movie") {
             AddMovieScreen(
-                onSaveClick = {
-                    title,
-                    genre,
-                    desc,
-                    prio -> movieViewModel.addMovie(
-                        title,
-                        genre,
-                        desc,
-                        prio
-                    )
-                },
-                onBack = {
-                    navController.popBackStack()
-                }
+                onSaveClick = { title, genre, desc, prio -> movieViewModel.addMovie(title, genre, desc, prio) },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -125,40 +75,20 @@ fun MovieAppNavigation() {
             ProfileScreen(
                 onLogout = {
                     navController.navigate("login") {
-                        popUpTo(0) {
-                            inclusive = true
-                        }
+                        popUpTo(0) { inclusive = true }
                     }
                 },
-                onBack = {
-                    navController.popBackStack()
-                }
+                onBack = { navController.popBackStack() }
             )
         }
 
         composable("favorites") {
             FavoritesScreen(
                 movies = movieViewModel.movies,
-                onToggleWatched = {
-                    id,
-                    isWatched -> movieViewModel.toggleWatched(
-                        id,
-                        isWatched
-                    )
-                },
-                onToggleFavorite = {
-                    id,
-                    isFav -> movieViewModel.toggleFavorite(
-                        id,
-                        isFav
-                    )
-                },
-                onDelete = {
-                    id -> movieViewModel.deleteMovie(id)
-                },
-                onBack = {
-                    navController.popBackStack()
-                }
+                onToggleWatched = { id, isWatched -> movieViewModel.toggleWatched(id, isWatched) },
+                onToggleFavorite = { id, isFav -> movieViewModel.toggleFavorite(id, isFav) },
+                onDelete = { id -> movieViewModel.deleteMovie(id) },
+                onBack = { navController.popBackStack() }
             )
         }
     }
