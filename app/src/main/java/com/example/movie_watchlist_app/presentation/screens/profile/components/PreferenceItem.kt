@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.screens.profile.componenets
+package com.example.movie_watchlist_app.presentation.screens.profile.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

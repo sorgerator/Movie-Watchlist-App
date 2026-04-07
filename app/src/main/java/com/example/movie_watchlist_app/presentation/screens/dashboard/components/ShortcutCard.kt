@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.components
+package com.example.movie_watchlist_app.presentation.screens.dashboard.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

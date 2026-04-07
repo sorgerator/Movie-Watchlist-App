@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.components
+package com.example.movie_watchlist_app.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,12 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.ui.graphics.vector.ImageVector
+
 @Composable
 fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    error: String? = null
+    error: String? = null,
+    leadingIcon: ImageVector = Icons.Default.Email
 ) {
     Column {
         OutlinedTextField(
@@ -27,7 +30,7 @@ fun AuthTextField(
             shape = RoundedCornerShape(12.dp),
             leadingIcon = {
                 Icon(
-                    Icons.Default.Email,
+                    leadingIcon,
                     contentDescription = null
                 )
             },

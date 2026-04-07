@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.screens
+package com.example.movie_watchlist_app.presentation.screens.watchlist
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.movie_watchlist_app.presentation.ui.components.MovieItem
+import com.example.movie_watchlist_app.presentation.components.MovieItem
 import com.example.movie_watchlist_app.presentation.util.Movie
 import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
 
@@ -62,7 +62,12 @@ fun WatchlistScreen(
                 Text("No movies yet. Tap + to add some!")
             } else {
                 LazyColumn {
-                    items(movies) { movie ->
+                    items(
+                        items = movies,
+                        key = {
+                                movie -> movie.id
+                        }
+                    ) { movie ->
                         MovieItem(
                             movie = movie,
                             onToggleWatched = { isWatched ->
@@ -71,11 +76,11 @@ fun WatchlistScreen(
                                     isWatched
                                 )
                             },
-                            onToggleFavorite = { isFav ->
-                                onToggleFavorite(
-                                    movie.id,
-                                    isFav
-                                )
+                            onToggleFavorite = {
+                                    isFav -> onToggleFavorite(
+                                movie.id,
+                                isFav
+                            )
                             },
                             onDelete = {
                                 onDelete(movie.id)

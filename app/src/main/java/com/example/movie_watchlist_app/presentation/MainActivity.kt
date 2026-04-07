@@ -11,9 +11,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.movie_watchlist_app.presentation.ui.MovieViewModel
-import com.example.movie_watchlist_app.presentation.ui.screens.*
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.screens.add_movie.AddMovieScreen
+import com.example.movie_watchlist_app.presentation.screens.dashboard.DashboardScreen
+import com.example.movie_watchlist_app.presentation.screens.favorites.FavoritesScreen
+import com.example.movie_watchlist_app.presentation.screens.login.LoginScreen
+import com.example.movie_watchlist_app.presentation.screens.registration.RegistrationScreen
+import com.example.movie_watchlist_app.presentation.screens.watchlist.WatchlistScreen
+import com.example.movie_watchlist_app.presentation.screens.profile.ProfileScreen
+import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +50,7 @@ fun MovieAppNavigation() {
         composable("register") {
             RegistrationScreen(
                 onRegisterSuccess = { navController.navigate("login") },
-                onNavigateToLogin = { navController.popBackStack() }
+                onNavigateClick = { navController.popBackStack() }
             )
         }
 

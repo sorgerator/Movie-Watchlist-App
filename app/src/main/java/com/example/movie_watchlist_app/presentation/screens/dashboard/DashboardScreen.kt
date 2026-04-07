@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.screens
+package com.example.movie_watchlist_app.presentation.screens.dashboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -15,8 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.movie_watchlist_app.R
-import com.example.movie_watchlist_app.presentation.ui.components.ShortcutCard
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.screens.dashboard.components.ShortcutCard
+import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
 
 data class DashboardItem(val title: String, val subtitle: String, val icon: ImageVector, val route: String, val imageRes: Int)
 

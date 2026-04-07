@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.components
+package com.example.movie_watchlist_app.presentation.screens.profile.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme

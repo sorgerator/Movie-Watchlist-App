@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.screens
+package com.example.movie_watchlist_app.presentation.screens.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -7,14 +7,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.movie_watchlist_app.presentation.ui.components.*
+import com.example.movie_watchlist_app.presentation.components.*
 import com.example.movie_watchlist_app.presentation.util.AuthValidators
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToRegister: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var hasTriedSubmit by remember { mutableStateOf(false) }
 
     val emailError = if (hasTriedSubmit) AuthValidators.validateEmail(email) else null
@@ -34,7 +35,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onNavigateToRegister: () -> Unit) {
             Spacer(Modifier.height(32.dp))
             AuthTextField(email, { email = it }, "Email", emailError)
             Spacer(Modifier.height(16.dp))
-            PasswordTextField(password, { password = it }, "Password", passwordError)
+            PasswordTextField(
+                password,
+                { password = it },
+                "Password",
+                passwordError,
+                isVisible = passwordVisible,
+                onVisibilityToggle = { passwordVisible = !passwordVisible }
+            )
             Spacer(Modifier.height(32.dp))
             AuthPrimaryButton("Login", onClick = {
                 hasTriedSubmit = true
