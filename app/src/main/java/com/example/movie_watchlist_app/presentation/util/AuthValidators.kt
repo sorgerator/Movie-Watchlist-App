@@ -17,7 +17,10 @@ object AuthValidators {
         if (fullName.isBlank()) return "Full name cannot be empty"
         return null
     }
-    fun validateConfirmPassword(password: String, confirmPassword: String): String? {
+    fun validateConfirmPassword(
+        password: String,
+        confirmPassword: String
+    ): String? {
         if (confirmPassword.isBlank()) return "Please confirm password"
         if (password != confirmPassword) return "Passwords do not match"
         return null
