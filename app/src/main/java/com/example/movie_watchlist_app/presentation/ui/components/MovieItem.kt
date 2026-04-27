@@ -12,17 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.movie_watchlist_app.presentation.util.Movie
+import com.example.movie_watchlist_app.model.Movie
 
 @Composable
 fun MovieItem(
     movie: Movie,
     onToggleWatched: (Boolean) -> Unit,
     onToggleFavorite: (Boolean) -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -31,10 +33,22 @@ fun MovieItem(
                 onCheckedChange = onToggleWatched,
                 colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
             )
-            Icon(Icons.Default.PlayArrow, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(horizontal = 8.dp))
+            Icon(
+                Icons.Default.PlayArrow,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = movie.title, style = MaterialTheme.typography.titleMedium, color = if (movie.isWatched) Color.Gray else Color.Unspecified)
-                Text(text = "${movie.genre} • ${movie.priority} Priority", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = movie.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (movie.isWatched) Color.Gray else Color.Unspecified
+                )
+                Text(
+                    text = "${movie.genre} • ${movie.priority} Priority",
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
 
             IconButton(onClick = { onToggleFavorite(!movie.isFavorite) }) {
@@ -46,7 +60,11 @@ fun MovieItem(
             }
 
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
@@ -56,7 +74,15 @@ fun MovieItem(
 @Composable
 fun MovieItemPreview() {
     MovieItem(
-        movie = Movie(1, "Inception", "Sci-Fi", "Dream within a dream", "High", true, true),
+        movie = Movie(
+            1,
+            "Inception",
+            "Sci-Fi",
+            "Dream within a dream",
+            "High",
+            true,
+            true
+        ),
         onToggleWatched = {},
         onToggleFavorite = {},
         onDelete = {}

@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.util
+package com.example.movie_watchlist_app.model
 
 data class Movie(
     val id: Int,
@@ -7,5 +7,6 @@ data class Movie(
     val description: String = "",
     val priority: String = "Medium",
     val isWatched: Boolean = false,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val imageResId: Int? = null
 )

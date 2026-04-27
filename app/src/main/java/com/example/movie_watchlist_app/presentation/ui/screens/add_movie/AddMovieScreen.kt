@@ -1,13 +1,11 @@
-package com.example.movie_watchlist_app.presentation.ui.screens
+package com.example.movie_watchlist_app.presentation.ui.screens.add_movie
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 
@@ -16,14 +14,33 @@ fun AddMovieScreen(
     onSaveClick: (String, String, String, String) -> Unit,
     onBack: () -> Unit
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-    var genre by remember { mutableStateOf("Action") }
-    var priority by remember { mutableStateOf("Medium") }
+    var title by remember {
+        mutableStateOf("")
+    }
+    var description by remember {
+        mutableStateOf("")
+    }
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    var genre by remember {
+        mutableStateOf("Action")
+    }
+    var priority by remember {
+        mutableStateOf("Medium")
+    }
 
-    val genres = listOf("Action", "Sci-Fi", "Drama", "Comedy")
-    val priorities = listOf("Low", "Medium", "High")
+    val genres = listOf(
+        "Action",
+        "Sci-Fi",
+        "Drama",
+        "Comedy"
+    )
+    val priorities = listOf(
+        "Low",
+        "Medium",
+        "High"
+    )
 
     AddMovieScreen(
         title = title,
@@ -67,36 +84,86 @@ private fun AddMovieScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add New Movie", color = MaterialTheme.colorScheme.primary) },
+                title = {
+                    Text(
+                        "Add New Movie",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
                     }
                 }
             )
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp)) {
-            OutlinedTextField(value = title, onValueChange = onTitleChange, label = { Text("Title") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+            OutlinedTextField(
+                value = title,
+                onValueChange = onTitleChange,
+                label = {
+                    Text("Title")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(value = description, onValueChange = onDescriptionChange, label = { Text("Description") }, modifier = Modifier.fillMaxWidth(), maxLines = 3)
+            OutlinedTextField(
+                value = description,
+                onValueChange = onDescriptionChange,
+                label = {
+                    Text("Description")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 3
+            )
             Spacer(Modifier.height(8.dp))
 
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = onExpandedChange) {
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = onExpandedChange
+            ) {
                 OutlinedTextField(
-                    value = genre, onValueChange = {}, readOnly = true,
-                    label = { Text("Genre") }, trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                    value = genre,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = {
+                        Text("Genre")
+                    },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+                    },
                     modifier = Modifier.menuAnchor().fillMaxWidth()
                 )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        onExpandedChange(false)
+                    }
+                ) {
                     genres.forEach { g ->
-                        DropdownMenuItem(text = { Text(g) }, onClick = { onGenreChange(g); onExpandedChange(false) })
+                        DropdownMenuItem(
+                            text = {
+                                Text(g)
+                            },
+                            onClick = {
+                                onGenreChange(g);
+                                onExpandedChange(false)
+                            }
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(24.dp))
-            Text("Viewing Priority", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Viewing Priority",
+                style = MaterialTheme.typography.titleMedium
+            )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 priorities.forEach { p ->
                     RadioButton(
@@ -104,7 +171,10 @@ private fun AddMovieScreen(
                         onClick = { onPriorityChange(p) },
                         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
                     )
-                    Text(text = p, modifier = Modifier.padding(end = 16.dp))
+                    Text(
+                        text = p,
+                        modifier = Modifier.padding(end = 16.dp)
+                    )
                 }
             }
 
@@ -119,17 +189,9 @@ private fun AddMovieScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                 )
-            ) { Text("Save Movie") }
+            ) {
+                Text("Save Movie")
+            }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddMovieScreenPreview() {
-    MovieWatchlistTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            AddMovieScreen(onSaveClick = { _, _, _, _ -> }, onBack = {})
-        }
     }
-}

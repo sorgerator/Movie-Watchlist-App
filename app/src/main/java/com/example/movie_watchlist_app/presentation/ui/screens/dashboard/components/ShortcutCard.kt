@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation.ui.components
+package com.example.movie_watchlist_app.presentation.ui.screens.dashboard.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -9,11 +9,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.movie_watchlist_app.R
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,29 +37,25 @@ fun ShortcutCard(
 
             Column(modifier = Modifier.padding(12.dp)) {
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text(title, style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
                 Spacer(Modifier.height(4.dp))
-                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ShortcutCardPreview() {
-    MovieWatchlistTheme {
-        Box(modifier = Modifier.padding(16.dp)) {
-            ShortcutCard(
-                title = "My Watchlist",
-                subtitle = "View saved movies",
-                icon = Icons.Default.List,
-                imageRes = R.drawable.movie_banner,
-                onClick = {}
-            )
-        }
     }
-}

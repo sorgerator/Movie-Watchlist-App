@@ -3,103 +3,116 @@ package com.example.movie_watchlist_app.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.movie_watchlist_app.presentation.ui.MovieViewModel
-import com.example.movie_watchlist_app.presentation.ui.screens.*
-import com.example.movie_watchlist_app.presentation.ui.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.navigation.NavGraph
+import com.example.movie_watchlist_app.presentation.navigation.Screen
+import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.presentation.viewmodel.MovieViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MovieWatchlistTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    MovieAppNavigation()
-                }
+                MovieAppMain()
             }
         }
     }
 }
 
 @Composable
-fun MovieAppNavigation() {
+fun MovieAppMain() {
     val navController = rememberNavController()
     val movieViewModel: MovieViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
-    NavHost(navController = navController, startDestination = "state_basics") {
+    val bottomNavItems = listOf(
+        BottomNavItem(
+            "Home",
+            Screen.Dashboard.route,
+            Icons.Default.Home
+        ),
+        BottomNavItem(
+            "Watchlist",
+            Screen.Watchlist.route,
+            Icons.AutoMirrored.Filled.List
+        ),
+        BottomNavItem(
+            "Favorites",
+            Screen.Favorites.route,
+            Icons.Default.Favorite
+        ),
+        BottomNavItem(
+            "Profile",
+            Screen.Profile.route,
+            Icons.Default.AccountCircle
+        )
+    )
 
-        composable("login") {
-            LoginScreen(
-                onLoginSuccess = { navController.navigate("dashboard") { popUpTo("login") { inclusive = true } } },
-                onNavigateToRegister = { navController.navigate("register") }
-            )
-        }
+    val showBottomBar = bottomNavItems.any {
+        it.route == currentDestination?.route
+    }
 
-        composable("register") {
-            RegistrationScreen(
-                onRegisterSuccess = { navController.navigate("login") },
-                onNavigateToLogin = { navController.popBackStack() }
-            )
-        }
-
-        composable("dashboard") {
-            DashboardScreen(onNavigate = { route -> navController.navigate(route) })
-        }
-
-        composable("watchlist") {
-            WatchlistScreen(
-                movies = movieViewModel.movies,
-                onToggleWatched = { id, isWatched -> movieViewModel.toggleWatched(id, isWatched) },
-                onToggleFavorite = { id, isFav -> movieViewModel.toggleFavorite(id, isFav) },
-                onDelete = { id -> movieViewModel.deleteMovie(id) },
-                onNavigateToAdd = { navController.navigate("add_movie") },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable("add_movie") {
-            AddMovieScreen(
-                onSaveClick = { title, genre, desc, prio -> movieViewModel.addMovie(title, genre, desc, prio) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable("profile") {
-            ProfileScreen(
-                onLogout = {
-                    navController.navigate("login") {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable("favorites") {
-            FavoritesScreen(
-                movies = movieViewModel.movies,
-                onToggleWatched = { id, isWatched -> movieViewModel.toggleWatched(id, isWatched) },
-                onToggleFavorite = { id, isFav -> movieViewModel.toggleFavorite(id, isFav) },
-                onDelete = { id -> movieViewModel.deleteMovie(id) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable("state_basics") {
-            StateBasicsScreen(
-                onBack = {
-                    navController.navigate("login") {
-                        popUpTo("state_basics") { inclusive = true }
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                NavigationBar {
+                    bottomNavItems.forEach { item ->
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    item.icon,
+                                    contentDescription = item.label
+                                )
+                            },
+                            label = {
+                                Text(item.label)
+                            },
+                            selected = currentDestination?.hierarchy?.any {
+                                it.route == item.route
+                            } == true,
+                            onClick = {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
                     }
                 }
+            }
+        }
+    ) { innerPadding ->
+        Surface(modifier = Modifier.padding(innerPadding)) {
+            NavGraph(
+                navController = navController,
+                movieViewModel = movieViewModel
             )
         }
     }
 }
+
+data class BottomNavItem(
+    val label: String,
+    val route: String,
+    val icon: ImageVector
+)
