@@ -19,8 +19,19 @@ import com.example.movie_watchlist_app.R
 import com.example.movie_watchlist_app.model.HardcodedData
 import com.example.movie_watchlist_app.presentation.navigation.Screen
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movie_watchlist_app.presentation.viewmodel.HomeShortcutViewModel
+
 @Composable
 fun DashboardScreen(onNavigate: (String) -> Unit) {
+    val homeShortcutViewModel: HomeShortcutViewModel = viewModel()
+    val searchTip by homeShortcutViewModel.searchTip.collectAsStateWithLifecycle()
+    
+    SideEffect {
+        println("Dashboard search tip: $searchTip")
+    }
+
     val categories = HardcodedData.genres
 
     val quickActions = listOf(
