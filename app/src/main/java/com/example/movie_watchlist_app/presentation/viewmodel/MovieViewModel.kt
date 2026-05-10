@@ -3,18 +3,23 @@ package com.example.movie_watchlist_app.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModel
 import com.example.movie_watchlist_app.model.Movie
-import com.example.movie_watchlist_app.model.HardcodedData
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import com.example.movie_watchlist_app.model.repository.SessionRepository
+import com.example.movie_watchlist_app.model.repository.movie.MovieRepository
+import com.example.movie_watchlist_app.model.repository.watchlist.WatchlistRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieViewModel : ViewModel() {
-    private val _movies = MutableStateFlow<List<Movie>>(HardcodedData.movies)
-    val movies: StateFlow<List<Movie>> = _movies.asStateFlow()
+@HiltViewModel
+class MovieViewModel @Inject constructor(
+    private val movieRepository: MovieRepository,
+    private val watchlistRepository: WatchlistRepository,
+    private val sessionRepository: SessionRepository
+) : ViewModel() {
+    val allMovies = movieRepository.getAllMovies().stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList()
+    )
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
@@ -22,105 +27,41 @@ class MovieViewModel : ViewModel() {
     private val _selectedGenre = MutableStateFlow("All")
     val selectedGenre: StateFlow<String> = _selectedGenre.asStateFlow()
 
-    val filteredMovies = combine(
-        _movies,
-        _searchQuery,
-        _selectedGenre
-    ) {
-        movies,
-        query,
-        genre ->
-        movies.filter { movie ->
-            (query.isEmpty() || movie.title.contains(query, ignoreCase = true) || movie.genre.contains(query, ignoreCase = true)) &&
-            (genre == "All" || movie.genre == genre)
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    val watchlist = sessionRepository.loggedInUserId.flatMapLatest { userId ->
+        if (userId != null) movieRepository.getWatchlistMovies(userId) else flowOf(emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun onGenreChange(genre: String) {
         _selectedGenre.value = genre
     }
 
-    val favoriteMovies = _movies.map { movies ->
-        movies.filter {
-            it.isFavorite
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
-
-    val watchedMoviesCount = _movies.map { movies ->
-        movies.count {
-            it.isWatched
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        0
-    )
-
-    val favoriteMoviesCount = _movies.map { movies ->
-        movies.count {
-            it.isFavorite
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        0
-    )
-
-    val totalMoviesCount = _movies.map { movies ->
-        movies.size
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        0
-    )
-
     fun onSearchQueryChange(newQuery: String) {
         _searchQuery.value = newQuery
     }
 
-    fun addMovie(
-        title: String,
-        genre: String,
-        description: String,
-        priority: String
-    ) {
-        val newId = (_movies.value.maxByOrNull {
-            it.id
-        }?.id ?: 0) + 1
-        _movies.value = _movies.value + Movie(
-            newId,
-            title,
-            genre,
-            description,
-            priority,
-            false,
-            false
-        )
-    }
-
-    fun toggleWatched(movieId: Int) {
-        _movies.value = _movies.value.map {
-            if (it.id == movieId) it.copy(isWatched = !it.isWatched) else it
+    val filteredMovies = combine(allMovies, searchQuery, selectedGenre) { movies, query, genre ->
+        movies.filter {
+            (genre == "All" || it.genre == genre) &&
+                    (query.isEmpty() || it.title.contains(query, ignoreCase = true))
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun toggleFavorite(movieId: Int) {
-        _movies.value = _movies.value.map {
-            if (it.id == movieId) it.copy(isFavorite = !it.isFavorite) else it
-        }
-    }
+    val favoriteMovies = allMovies.map { it.filter { movie -> movie.isFavorite } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun deleteMovie(movieId: Int) {
-        _movies.value = _movies.value.filter {
-            it.id != movieId
-        }
+    val totalMoviesCount = allMovies.map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val watchedMoviesCount = allMovies.map { it.count { m -> m.isWatched } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val favoriteMoviesCount = favoriteMovies.map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    fun toggleWatched(movieId: Int) {}
+    fun toggleFavorite(movieId: Int) {}
+    fun deleteMovie(movieId: Int) {}
+    fun addMovie(title: String, genre: String, description: String, priority: String) {
+        // TODO: Map to Movie domain model and insert
     }
 }

@@ -1,4 +1,4 @@
-package com.example.movie_watchlist_app.presentation
+package com.example.movie_watchlist_app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,8 +22,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movie_watchlist_app.presentation.navigation.NavGraph
 import com.example.movie_watchlist_app.presentation.navigation.Screen
 import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
+import dagger.hilt.android.AndroidEntryPoint
 import com.example.movie_watchlist_app.presentation.viewmodel.MovieViewModel
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -2,50 +2,48 @@ package com.example.movie_watchlist_app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movie_watchlist_app.model.repository.FakeProfileRepository
-import com.example.movie_watchlist_app.model.repository.ProfileData
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import com.example.movie_watchlist_app.model.repository.SessionRepository
+import com.example.movie_watchlist_app.model.repository.user.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class ProfileUiState {
     object Init : ProfileUiState()
     object Loading : ProfileUiState()
-    data class Success(val profile: ProfileData, val stats: String, val rows: String) : ProfileUiState()
+    data class Success(val name: String, val email: String) : ProfileUiState()
     data class Error(val message: String) : ProfileUiState()
 }
 
-class ProfileViewModel(private val repository: FakeProfileRepository = FakeProfileRepository()) : ViewModel() {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val sessionRepository: SessionRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Init)
     val uiState: StateFlow<ProfileUiState> = _uiState
 
-    fun loadProfile() {
-        viewModelScope.launch {
-            _uiState.value = ProfileUiState.Loading
-            try {
-                val profileDeferred = async { repository.getProfile() }
-                val statsDeferred = async { repository.getProfileStats() }
-                val rowsDeferred = async { repository.getAdditionalRows() }
-
-                val profile = profileDeferred.await()
-                val stats = statsDeferred.await()
-                val rows = rowsDeferred.await()
-
-                _uiState.value = ProfileUiState.Success(profile, stats, rows)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: IllegalStateException) {
-                _uiState.value = ProfileUiState.Error(e.message ?: "Unknown error")
-            } catch (e: Exception) {
-                _uiState.value = ProfileUiState.Error("An unexpected error occurred")
-            }
-        }
+    init {
+        loadProfile()
     }
 
-    fun resetUiState() {
-        loadProfile()
+    private fun loadProfile() {
+        viewModelScope.launch {
+            _uiState.value = ProfileUiState.Loading
+            val userId = sessionRepository.loggedInUserId.firstOrNull()
+            if (userId != null) {
+                val user = userRepository.getUserById(userId)
+                if (user != null) {
+                    _uiState.value = ProfileUiState.Success(user.fullName, user.email)
+                } else {
+                    _uiState.value = ProfileUiState.Error("User not found")
+                }
+            } else {
+                _uiState.value = ProfileUiState.Error("Not logged in")
+            }
+        }
     }
 }

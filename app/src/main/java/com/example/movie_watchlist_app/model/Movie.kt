@@ -1,6 +1,7 @@
 package com.example.movie_watchlist_app.model
 
-data class Movie(
+data class
+Movie(
     val id: Int,
     val title: String,
     val genre: String,
