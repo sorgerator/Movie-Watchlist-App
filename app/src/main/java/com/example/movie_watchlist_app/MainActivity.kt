@@ -14,16 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.movie_watchlist_app.presentation.navigation.NavGraph
-import com.example.movie_watchlist_app.presentation.navigation.Screen
-import com.example.movie_watchlist_app.presentation.theme.MovieWatchlistTheme
+import com.example.movie_watchlist_app.ui.navigation.NavGraph
+import com.example.movie_watchlist_app.ui.navigation.Screen
+import com.example.movie_watchlist_app.ui.theme.MovieWatchlistTheme
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.movie_watchlist_app.presentation.viewmodel.MovieViewModel
+
+import androidx.compose.ui.res.stringResource
+import com.example.movie_watchlist_app.R
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,28 +41,29 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MovieAppMain() {
     val navController = rememberNavController()
-    val movieViewModel: MovieViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
+    
+    // In a real app, we'd check session here and redirect if needed
+    // For now, let's just fix the NavGraph arguments and flow
     val bottomNavItems = listOf(
         BottomNavItem(
-            "Home",
+            R.string.nav_home,
             Screen.Dashboard.route,
             Icons.Default.Home
         ),
         BottomNavItem(
-            "Watchlist",
+            R.string.nav_watchlist,
             Screen.Watchlist.route,
             Icons.AutoMirrored.Filled.List
         ),
         BottomNavItem(
-            "Favorites",
+            R.string.nav_favorites,
             Screen.Favorites.route,
             Icons.Default.Favorite
         ),
         BottomNavItem(
-            "Profile",
+            R.string.nav_profile,
             Screen.Profile.route,
             Icons.Default.AccountCircle
         )
@@ -76,15 +78,16 @@ fun MovieAppMain() {
             if (showBottomBar) {
                 NavigationBar {
                     bottomNavItems.forEach { item ->
+                        val label = stringResource(item.labelResId)
                         NavigationBarItem(
                             icon = {
                                 Icon(
                                     item.icon,
-                                    contentDescription = item.label
+                                    contentDescription = label
                                 )
                             },
                             label = {
-                                Text(item.label)
+                                Text(label)
                             },
                             selected = currentDestination?.hierarchy?.any {
                                 it.route == item.route
@@ -106,15 +109,14 @@ fun MovieAppMain() {
     ) { innerPadding ->
         Surface(modifier = Modifier.padding(innerPadding)) {
             NavGraph(
-                navController = navController,
-                movieViewModel = movieViewModel
+                navController = navController
             )
         }
     }
 }
 
 data class BottomNavItem(
-    val label: String,
+    val labelResId: Int,
     val route: String,
     val icon: ImageVector
 )
