@@ -2,6 +2,7 @@ package com.example.movie_watchlist_app.ui.features.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movie_watchlist_app.domain.model.Movie
 import com.example.movie_watchlist_app.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -37,6 +38,18 @@ class FavoritesViewModel @Inject constructor(
     fun onMovieClick(movieId: Long) {
         viewModelScope.launch {
             _navigationEvents.send(FavoritesNavigationEvent.NavigateToMovieDetails(movieId))
+        }
+    }
+
+    fun onToggleFavorite(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateFavoriteStatus(movie.id, !movie.isFavorite)
+        }
+    }
+
+    fun onToggleWatched(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateWatchedStatus(movie.id, !movie.isWatched)
         }
     }
 }

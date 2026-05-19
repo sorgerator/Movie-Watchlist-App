@@ -15,6 +15,10 @@ import androidx.compose.ui.res.stringResource
 import com.example.movie_watchlist_app.R
 import com.example.movie_watchlist_app.domain.model.Movie
 
+import com.example.movie_watchlist_app.ui.components.MovieItem
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -37,37 +41,61 @@ fun FavoritesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.nav_favorites)) },
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        stringResource(R.string.nav_favorites).uppercase(),
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 2.sp,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
+                )
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
             when (val state = uiState) {
-                is FavoritesUiState.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                is FavoritesUiState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary
+                )
                 is FavoritesUiState.Success -> {
                     if (state.favoriteMovies.isEmpty()) {
                         Text(
-                            text = "No favorites added yet.",
-                            modifier = Modifier.align(Alignment.Center)
+                            text = "NO FAVORITES YET".uppercase(),
+                            modifier = Modifier.align(Alignment.Center),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            letterSpacing = 2.sp
                         )
                     } else {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 16.dp)
+                        ) {
                             items(state.favoriteMovies) { movie ->
-                                ListItem(
-                                    headlineContent = { Text(movie.title) },
-                                    supportingContent = { Text(movie.description) },
-                                    modifier = Modifier.clickable { viewModel.onMovieClick(movie.id) }
+                                MovieItem(
+                                    movie = movie,
+                                    onToggleWatched = { viewModel.onToggleWatched(movie) },
+                                    onToggleFavorite = { viewModel.onToggleFavorite(movie) },
+                                    onDelete = { /* No delete in Favorites screen maybe? Or add if needed */ },
+                                    onClick = { viewModel.onMovieClick(movie.id) }
                                 )
-                                HorizontalDivider()
                             }
                         }
                     }
@@ -76,7 +104,9 @@ fun FavoritesScreen(
                     Text(
                         text = state.message ?: stringResource(R.string.error_unknown),
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 else -> {}

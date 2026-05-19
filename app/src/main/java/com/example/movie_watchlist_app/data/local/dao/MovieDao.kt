@@ -42,4 +42,16 @@ interface MovieDao {
 
     @Query("SELECT * FROM genres")
     fun getAllGenres(): Flow<List<GenreEntity>>
+
+    @Query("UPDATE movies SET isWatched = :isWatched WHERE id = :movieId")
+    suspend fun updateWatchedStatus(movieId: Long, isWatched: Boolean)
+
+    @Query("UPDATE movies SET isFavorite = :isFavorite WHERE id = :movieId")
+    suspend fun updateFavoriteStatus(movieId: Long, isFavorite: Boolean)
+
+    @Delete
+    suspend fun deleteMovie(movie: MovieEntity)
+
+    @Query("DELETE FROM movies WHERE id = :movieId")
+    suspend fun deleteMovieById(movieId: Long)
 }

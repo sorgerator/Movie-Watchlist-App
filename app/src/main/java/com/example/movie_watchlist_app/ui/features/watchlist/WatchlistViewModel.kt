@@ -12,9 +12,13 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.example.movie_watchlist_app.domain.model.Movie
+import com.example.movie_watchlist_app.domain.repository.MovieRepository
+
 @HiltViewModel
 class WatchlistViewModel @Inject constructor(
     private val watchlistRepository: WatchlistRepository,
+    private val movieRepository: MovieRepository,
     private val sessionRepository: SessionRepository
 ) : ViewModel() {
 
@@ -59,6 +63,18 @@ class WatchlistViewModel @Inject constructor(
                 if (e is CancellationException) throw e
                 // Error handled in UI if needed
             }
+        }
+    }
+
+    fun onToggleWatched(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateWatchedStatus(movie.id, !movie.isWatched)
+        }
+    }
+
+    fun onToggleFavorite(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateFavoriteStatus(movie.id, !movie.isFavorite)
         }
     }
 }

@@ -14,18 +14,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.ui.unit.sp
+
 @Composable
 fun AuthFooterText(normalText: String, actionText: String, onActionClick: () -> Unit) {
     Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-        Text(text = normalText, color = Color.Gray)
-        Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = actionText,
+            text = normalText.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.secondary,
+            letterSpacing = 1.sp
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = actionText.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.clickable {
                 onActionClick()
-            }
+            },
+            letterSpacing = 1.sp
         )
     }
 }

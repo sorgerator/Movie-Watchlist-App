@@ -56,4 +56,10 @@
     <string name="cd_delete">Delete</string>
     <string name="cd_remove">Remove</string>
     <string name="cd_toggle_password">Toggle password visibility</string>
+    <string name="label_movie_title">Movie Title</string>
+    <string name="label_genre">Genre</string>
+    <string name="label_release_date">Release Date</string>
+    <string name="label_priority">Priority</string>
+    <string name="label_description">Description</string>
+    <string name="btn_save_movie">Add Movie</string>
 </resources>

@@ -11,6 +11,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.movie_watchlist_app.R
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import com.example.movie_watchlist_app.ui.components.*
+import com.example.movie_watchlist_app.ui.util.AuthValidators
+
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel,
@@ -20,6 +25,12 @@ fun RegisterScreen(
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var hasTriedSubmit by remember { mutableStateOf(false) }
+
+    val fullNameError = if (hasTriedSubmit && fullName.isBlank()) stringResource(R.string.error_registration_failed) else null
+    val emailError = if (hasTriedSubmit) AuthValidators.validateEmail(email) else null
+    val passwordError = if (hasTriedSubmit) AuthValidators.validatePassword(password) else null
 
     LaunchedEffect(viewModel.navigationEvents) {
         viewModel.navigationEvents.collect { event ->
@@ -29,56 +40,78 @@ fun RegisterScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        when (uiState) {
-            is RegisterUiState.Loading -> CircularProgressIndicator()
-            else -> {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (uiState is RegisterUiState.Loading) {
+                CircularProgressIndicator()
+            } else {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(stringResource(R.string.register_account), style = MaterialTheme.typography.headlineMedium)
-                    
-                    OutlinedTextField(
-                        value = fullName,
-                        onValueChange = { fullName = it },
-                        label = { Text(stringResource(R.string.label_full_name)) },
-                        modifier = Modifier.fillMaxWidth()
+                    AuthHeader(
+                        stringResource(R.string.register_account),
+                        stringResource(R.string.login_subtitle) // Reusing subtitle or similar
                     )
+                    Spacer(Modifier.height(32.dp))
                     
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = { Text(stringResource(R.string.label_email)) },
-                        modifier = Modifier.fillMaxWidth()
+                    AuthTextField(
+                        fullName,
+                        { fullName = it },
+                        stringResource(R.string.label_full_name),
+                        fullNameError,
+                        leadingIcon = Icons.Default.Person
                     )
+                    Spacer(Modifier.height(16.dp))
                     
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text(stringResource(R.string.label_password)) },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth()
+                    AuthTextField(
+                        email,
+                        { email = it },
+                        stringResource(R.string.label_email),
+                        emailError
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    
+                    PasswordTextField(
+                        password,
+                        { password = it },
+                        stringResource(R.string.label_password),
+                        passwordError,
+                        isVisible = passwordVisible,
+                        onVisibilityToggle = { passwordVisible = !passwordVisible }
                     )
 
                     if (uiState is RegisterUiState.Error) {
+                        Spacer(Modifier.height(8.dp))
                         Text(
                             text = (uiState as RegisterUiState.Error).message ?: stringResource(R.string.error_unknown),
-                            color = MaterialTheme.colorScheme.error
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelSmall
                         )
                     }
 
-                    Button(
-                        onClick = { viewModel.onRegisterClick(fullName, email, password) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.register_now))
-                    }
-
-                    TextButton(onClick = { onNavigateBack() }) {
-                        Text(stringResource(R.string.already_have_account))
-                    }
+                    Spacer(Modifier.height(32.dp))
+                    AuthPrimaryButton(
+                        stringResource(R.string.register_now),
+                        onClick = {
+                            hasTriedSubmit = true
+                            if (fullNameError == null && emailError == null && passwordError == null) {
+                                viewModel.onRegisterClick(fullName, email, password)
+                            }
+                        }
+                    )
+                    
+                    Spacer(Modifier.height(32.dp))
+                    AuthFooterText(
+                        stringResource(R.string.already_have_account),
+                        stringResource(R.string.btn_login),
+                        onNavigateBack
+                    )
                 }
             }
         }

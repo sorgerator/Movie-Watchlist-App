@@ -63,4 +63,16 @@ class MovieRepositoryImpl @Inject constructor(
 
     override fun getMovieByIdFlow(movieId: Long): Flow<Movie?> = 
         movieDao.getMovieByIdFlow(movieId).map { it?.toDomain() }
+
+    override suspend fun updateWatchedStatus(movieId: Long, isWatched: Boolean) = withContext(Dispatchers.IO) {
+        movieDao.updateWatchedStatus(movieId, isWatched)
+    }
+
+    override suspend fun updateFavoriteStatus(movieId: Long, isFavorite: Boolean) = withContext(Dispatchers.IO) {
+        movieDao.updateFavoriteStatus(movieId, isFavorite)
+    }
+
+    override suspend fun deleteMovie(movieId: Long) = withContext(Dispatchers.IO) {
+        movieDao.deleteMovieById(movieId)
+    }
 }

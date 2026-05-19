@@ -19,6 +19,7 @@ import com.example.movie_watchlist_app.ui.features.favorites.FavoritesViewModel
 import com.example.movie_watchlist_app.ui.features.favorites.FavoritesScreen
 import com.example.movie_watchlist_app.ui.features.profile.ProfileViewModel
 import com.example.movie_watchlist_app.ui.features.profile.ProfileScreen
+import com.example.movie_watchlist_app.ui.features.add_movie.AddMovieViewModel
 import com.example.movie_watchlist_app.ui.features.add_movie.AddMovieScreen
 import com.example.movie_watchlist_app.ui.features.details.MovieDetailsViewModel
 import com.example.movie_watchlist_app.ui.features.details.MovieDetailScreen
@@ -64,6 +65,9 @@ fun NavGraph(
                 onNavigateToDetails = { movie ->
                     val encodedTitle = URLEncoder.encode(movie.title, StandardCharsets.UTF_8.toString())
                     navController.navigate(Screen.MovieDetails.createRoute(movie.id, encodedTitle))
+                },
+                onNavigateToAddMovie = {
+                    navController.navigate(Screen.AddMovie.route)
                 },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
@@ -123,7 +127,11 @@ fun NavGraph(
         }
 
         composable(Screen.AddMovie.route) {
-            AddMovieScreen(onBack = { navController.popBackStack() })
+            val viewModel: AddMovieViewModel = hiltViewModel()
+            AddMovieScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(

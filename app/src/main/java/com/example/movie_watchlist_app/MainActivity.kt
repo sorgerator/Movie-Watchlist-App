@@ -3,6 +3,7 @@ package com.example.movie_watchlist_app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -24,6 +25,10 @@ import com.example.movie_watchlist_app.ui.theme.MovieWatchlistTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.movie_watchlist_app.R
 
 @AndroidEntryPoint
@@ -44,8 +49,6 @@ fun MovieAppMain() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     
-    // In a real app, we'd check session here and redirect if needed
-    // For now, let's just fix the NavGraph arguments and flow
     val bottomNavItems = listOf(
         BottomNavItem(
             R.string.nav_home,
@@ -76,22 +79,36 @@ fun MovieAppMain() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    tonalElevation = 0.dp,
+                    modifier = Modifier.height(72.dp)
+                ) {
                     bottomNavItems.forEach { item ->
                         val label = stringResource(item.labelResId)
+                        val isSelected = currentDestination?.hierarchy?.any {
+                            it.route == item.route
+                        } == true
+                        
                         NavigationBarItem(
                             icon = {
                                 Icon(
                                     item.icon,
-                                    contentDescription = label
+                                    contentDescription = label,
+                                    tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
                                 )
                             },
                             label = {
-                                Text(label)
+                                Text(
+                                    label.uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold,
+                                    letterSpacing = 1.sp,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                                )
                             },
-                            selected = currentDestination?.hierarchy?.any {
-                                it.route == item.route
-                            } == true,
+                            selected = isSelected,
                             onClick = {
                                 navController.navigate(item.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
@@ -100,14 +117,21 @@ fun MovieAppMain() {
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = MaterialTheme.colorScheme.surface // No visible indicator
+                            )
                         )
                     }
                 }
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Surface(modifier = Modifier.padding(innerPadding)) {
+        Surface(
+            modifier = Modifier.padding(innerPadding),
+            color = MaterialTheme.colorScheme.background
+        ) {
             NavGraph(
                 navController = navController
             )

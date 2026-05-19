@@ -14,4 +14,7 @@ interface MovieRepository {
     fun getGenresForMovie(movieId: Long): Flow<List<Genre>>
     suspend fun getMovieById(movieId: Long): Movie?
     fun getMovieByIdFlow(movieId: Long): Flow<Movie?>
+    suspend fun updateWatchedStatus(movieId: Long, isWatched: Boolean)
+    suspend fun updateFavoriteStatus(movieId: Long, isFavorite: Boolean)
+    suspend fun deleteMovie(movieId: Long)
 }

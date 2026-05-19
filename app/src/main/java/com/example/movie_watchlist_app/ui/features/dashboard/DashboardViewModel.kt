@@ -2,6 +2,7 @@ package com.example.movie_watchlist_app.ui.features.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movie_watchlist_app.domain.model.Movie
 import com.example.movie_watchlist_app.domain.repository.MovieRepository
 import com.example.movie_watchlist_app.domain.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +24,8 @@ class DashboardViewModel @Inject constructor(
     val uiState: StateFlow<DashboardUiState> = movieRepository.getAllMovies()
         .map { movies -> DashboardUiState.Success(movies) as DashboardUiState }
         .onStart { 
-            movieRepository.seedDatabase()
             emit(DashboardUiState.Loading) 
+            movieRepository.seedDatabase()
         }
         .catch { e -> 
             if (e is CancellationException) throw e
@@ -46,6 +47,24 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             sessionRepository.clearSession()
             _navigationEvents.send(DashboardNavigationEvent.Logout)
+        }
+    }
+
+    fun onToggleWatched(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateWatchedStatus(movie.id, !movie.isWatched)
+        }
+    }
+
+    fun onToggleFavorite(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.updateFavoriteStatus(movie.id, !movie.isFavorite)
+        }
+    }
+
+    fun onDeleteMovie(movie: Movie) {
+        viewModelScope.launch {
+            movieRepository.deleteMovie(movie.id)
         }
     }
 }
