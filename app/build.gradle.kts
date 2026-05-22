@@ -3,14 +3,15 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
 }
 
 android {
-    namespace = "com.example.movie_watchlist_app"
+    namespace = "com.example.filmfolio"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.movie_watchlist_app"
+        applicationId = "com.example.filmfolio"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -71,4 +72,17 @@ dependencies {
 
     // DataStore
     implementation(libs.datastore.preferences)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.play.services.coroutines)
+
+    // Credentials & Google Sign-In
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
 }

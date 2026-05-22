@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Movie Watchlist App</string>
+    <string name="app_name">FilmFolio</string>
     <string name="empty_list">No movies added yet. Time to find some popcorn!</string>
     <string name="title_dashboard">Movie Dashboard</string>
     <string name="title_watchlist">My Watchlist</string>
