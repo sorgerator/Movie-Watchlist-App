@@ -1,9 +1,65 @@
 <resources>
-    <string name="app_name">Movie-Watchlist-App</string>
+    <string name="app_name">FilmFolio</string>
     <string name="empty_list">No movies added yet. Time to find some popcorn!</string>
-
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Movie Dashboard</string>
     <string name="title_watchlist">My Watchlist</string>
     <string name="title_add_movie">Add New Movie</string>
     <string name="btn_add">Add to Watchlist</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_watchlist">Watchlist</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_profile">Profile</string>
+    
+    <!-- Auth -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Login to access your movies</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_google_signin">Continue with Google</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="register_now">Register</string>
+    <string name="register_account">Register Account</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="auth_divider_or">OR</string>
+    
+    <!-- Movie Details -->
+    <string name="movie_details">Movie Details</string>
+    <string name="release_date">Release Date: %s</string>
+    <string name="current_status">Current Status: %s</string>
+    <string name="mark_as_watched">Mark as Watched</string>
+    <string name="add_to_watchlist">Add to Watchlist</string>
+    
+    <!-- Errors & Messages -->
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_data_not_found">Data not found</string>
+    <string name="error_failed_to_load_details">Failed to load details</string>
+    <string name="error_failed_to_load_movies">Failed to load movies</string>
+    <string name="error_invalid_credentials">Invalid credentials</string>
+    <string name="error_registration_failed">Registration failed</string>
+    <string name="watchlist_empty">Watchlist is empty</string>
+    
+    <!-- Profile -->
+    <string name="profile_header">My Profile</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_member_since">Member since: %s</string>
+    <string name="btn_logout">Logout</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_back">Back</string>
+    <string name="cd_logout">Logout</string>
+    <string name="cd_favorite">Favorite</string>
+    <string name="cd_delete">Delete</string>
+    <string name="cd_remove">Remove</string>
+    <string name="cd_toggle_password">Toggle password visibility</string>
+    <string name="label_movie_title">Movie Title</string>
+    <string name="label_genre">Genre</string>
+    <string name="label_release_date">Release Date</string>
+    <string name="label_priority">Priority</string>
+    <string name="label_description">Description</string>
+    <string name="btn_save_movie">Add Movie</string>
 </resources>
